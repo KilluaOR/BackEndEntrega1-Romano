@@ -2,12 +2,12 @@
 
 // await fs.readFile("");
 // fs.writwFile("mensajes.txt", "primer mensaje");
-
+//Me traigo la libreria express
 import express from "express";
-
+//Creo mi server
 const servidor = express(); //Este es mi servidor
 
-const PORT = 5000;
+const PORT = 8080;
 
 //RUTA
 //miServidor.METODO("RUTA",callback)
