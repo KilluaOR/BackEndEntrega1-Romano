@@ -20,3 +20,4 @@ class CartManager {
     return newCart;
   }
 }
+export default CartManager;
