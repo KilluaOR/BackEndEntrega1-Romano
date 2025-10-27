@@ -7,7 +7,6 @@ const productManager = new ProductManager("./src/managers/data/products.json");
 router.get("/", async (req, res) => {
   const products = await productManager.getProducts();
   res.json(products);
-  console.log("hola");
 });
 
 router.post("/", async (req, res) => {
