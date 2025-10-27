@@ -6,7 +6,7 @@ class CartManager {
   }
   async getCarts() {
     if (!fs.existsSync(this.path)) return [];
-    const data = await fs.promises.readFile(this.patj, "utf-8");
+    const data = await fs.promises.readFile(this.path, "utf-8");
     return JSON.parse(data);
   }
   async createCart() {
