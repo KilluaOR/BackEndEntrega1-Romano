@@ -13,9 +13,27 @@ class ProductManager {
 
   async addProduct(product) {
     const products = await this.getProducts();
+    const requiredFields = [
+      "title",
+      "description",
+      "code",
+      "price",
+      "stock",
+      "category",
+    ];
+    for (const field of requiredFields) {
+      if (!product[field]) {
+        throw new Error(`El campo "${field}" es obligatorio`);
+      }
+    }
+    const newId = products.length
+      ? Math.max(...products.map((p) => Number(p.id))) + 1
+      : 1;
+
     const newProduct = {
-      id: products.length ? products[products.length - 1].id + 1 : 1,
-      status: true,
+      id: newId,
+      status: product.status !== undefined ? product.status : true,
+      thumbnails: product.thumbnails || [],
       ...product,
     };
     products.push(newProduct);
