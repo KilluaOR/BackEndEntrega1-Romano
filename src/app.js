@@ -28,9 +28,6 @@ app.get("/", (req, res) => {
   res.render("index", testUser);
 });
 
-app.on("request", () => {
-  console.log("Solicitud recibida");
-});
 app.listen(PORT, () => {
   console.log(`Servidor corriendo en el puerto ${PORT}`);
 });
