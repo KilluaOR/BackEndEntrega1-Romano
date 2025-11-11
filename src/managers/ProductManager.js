@@ -42,4 +42,6 @@ class ProductManager {
   }
 }
 
+getProductById(id);
+
 export default ProductManager;
