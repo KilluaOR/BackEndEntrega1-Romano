@@ -50,7 +50,7 @@ class ProductManager {
   async updateProduct(id, updatedFields) {
     try {
       const products = await this.getProducts(); //Traigo todos los productos.
-      const index = products.findIndex((p) => p.id === id); //Busca en el array qué prod. tiene el id q pasamos, y devuelve la posiscion de el mismo.
+      const index = products.findIndex((p) => Number(p.id) === Number(id)); //Busca en el array qué prod. tiene el id q pasamos, y devuelve la posiscion de el mismo.
       if (index === -1) {
         return { error: `Producto con id ${id} no encontrado` }; //Muestra error si no encuentra el prod.
       }
@@ -72,13 +72,13 @@ class ProductManager {
   async deleteProduct(id) {
     try {
       const products = await this.getProducts(); //Leo los prod.
-      const index = products.findIndex((p) => p.id === id);
+      const index = products.findIndex((p) => Number(p.id) === Number(id));
 
       if (index === -1) {
         return { error: `producto con id ${id} no encontrado` };
       }
       //Saco el prod. del array.
-      const deletedProduct = products.splice(index, 1)[0];
+      const deletedProduct = products.splice(index, 1)[0]; //Elimina un elem. en la posicíon index y devuelve un array con el elem. eliminado
 
       //Guardo el nuevo array sin ese prod.
       await fs.promises.writeFile(this.path, JSON.stringify(products, null, 2));
