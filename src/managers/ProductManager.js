@@ -12,33 +12,50 @@ class ProductManager {
   }
 
   async addProduct(product) {
-    const products = await this.getProducts();
-    const requiredFields = [
-      "title",
-      "description",
-      "code",
-      "price",
-      "stock",
-      "category",
-    ];
-    for (const field of requiredFields) {
-      if (!product[field]) {
-        throw new Error(`El campo "${field}" es obligatorio`);
-      }
-    }
-    const newId = products.length
-      ? Math.max(...products.map((p) => Number(p.id))) + 1
-      : 1;
+    try {
+      const products = await this.getProducts();
 
-    const newProduct = {
-      id: newId,
-      status: product.status !== undefined ? product.status : true,
-      thumbnails: product.thumbnails || [],
-      ...product,
-    };
-    products.push(newProduct);
-    await fs.promises.writeFile(this.path, JSON.stringify(products, null, 2));
-    return newProduct;
+      const requiredFields = [
+        "title",
+        "description",
+        "code",
+        "price",
+        "stock",
+        "category",
+      ];
+
+      const missingFields = requiredFields.filter((field) => !product[field]);
+
+      if (missingFields.length > 0) {
+        return {
+          error: `Faltan campos obligatorios: ${missingFields.join(", ")}`,
+        };
+      }
+      const codeExists = products.some((p) => p.code === product.code);
+      if (codeExists) {
+        return {
+          error: `El código "${product.code}" ya existe. Debe ser único.`,
+        };
+      }
+
+      const newId = products.length
+        ? Math.max(...products.map((p) => Number(p.id))) + 1
+        : 1;
+
+      const newProduct = {
+        id: newId,
+        status: product.status !== undefined ? product.status : true,
+        thumbnails: product.thumbnails || [],
+        ...product,
+      };
+
+      products.push(newProduct);
+
+      await fs.promises.writeFile(this.path, JSON.stringify(products, null, 2));
+      return newProduct;
+    } catch {
+      throw new Error("Error al agregar producto: " + error.message);
+    }
   }
 
   async getProductById(id) {

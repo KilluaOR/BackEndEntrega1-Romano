@@ -5,14 +5,29 @@ const router = Router(); //Mini servidor q maneja las rutas de productos.
 const productManager = new ProductManager("./src/managers/data/products.json");
 
 router.get("/", async (req, res) => {
-  const products = await productManager.getProducts();
-  res.json(products);
+  try {
+    const products = await productManager.getProducts();
+    res.json(products);
+  } catch (error) {
+    console.error("Error al obtener productos:", error);
+    res.status(500).json({ error: "Error interno al obtener productos" });
+  }
 });
 
 router.post("/", async (req, res) => {
-  const newProduct = req.body;
-  const addedProduct = await productManager.addProduct(newProduct);
-  res.status(201).json(addedProduct);
+  try {
+    const newProduct = req.body;
+    const addedProduct = await productManager.addProduct(newProduct);
+
+    if (addedProduct.error) {
+      return res.status(400).json(addedProduct);
+    }
+
+    res.status(201).json(addedProduct);
+  } catch (error) {
+    console.error("Error en POST /:", error);
+    res.status(500).json({ error: "Error interno del servidor" });
+  }
 });
 
 router.get("/:pid", async (req, res) => {
