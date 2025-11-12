@@ -68,6 +68,26 @@ class ProductManager {
       throw new Error("Error al actualizar producto: " + error.message);
     }
   }
+
+  async deleteProduct(id) {
+    try {
+      const products = await this.getProducts(); //Leo los prod.
+      const index = products.findIndex((p) => p.id === id);
+
+      if (index === -1) {
+        return { error: `producto con id ${id} no encontrado` };
+      }
+      //Saco el prod. del array.
+      const deletedProduct = products.splice(index, 1)[0];
+
+      //Guardo el nuevo array sin ese prod.
+      await fs.promises.writeFile(this.path, JSON.stringify(products, null, 2));
+
+      return deletedProduct;
+    } catch (error) {
+      throw new Error("Error al eliminar producto: " + error.message);
+    }
+  }
 }
 
 export default ProductManager;

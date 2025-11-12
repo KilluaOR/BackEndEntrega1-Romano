@@ -46,7 +46,7 @@ router.put("/:pid", async (req, res) => {
       return res.status(404).json(result);
     }
 
-    return req.json({
+    return res.json({
       message: "Producto actualizado correctamente",
       product: result,
     });
@@ -55,6 +55,27 @@ router.put("/:pid", async (req, res) => {
     return res
       .status(500)
       .json({ error: "Error interno al actualizar producto" });
+  }
+});
+
+router.delete("/:pid", async (req, res) => {
+  try {
+    const { pid } = req.params;
+    const idNum = isNaN(pid) ? pid : parseInt(pid);
+
+    const result = await productManager.deleteProduct(idNum);
+
+    if (result && result.error) {
+      return res.status(404).json(result);
+    }
+
+    res.json({
+      message: "Producto eliminado correctamente",
+      deleted: result,
+    });
+  } catch (error) {
+    console.error("DELETE /:pid error:", error);
+    res.status(500).json({ error: "Error interno al eliminar producto" });
   }
 });
 
