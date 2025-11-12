@@ -40,8 +40,12 @@ class ProductManager {
     await fs.promises.writeFile(this.path, JSON.stringify(products, null, 2));
     return newProduct;
   }
-}
 
-getProductById(id);
+  async getProductById(id) {
+    const products = await this.getProducts();
+    const product = products.find((p) => Number(p.id) === Number(id));
+    return product || null;
+  }
+}
 
 export default ProductManager;
