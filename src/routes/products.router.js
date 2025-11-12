@@ -17,11 +17,11 @@ router.post("/", async (req, res) => {
 
 router.get("/:pid", async (req, res) => {
   const { pid } = req.params;
-  const product = await manager.getProductById(pid);
+  const product = await productManager.getProductById(pid);
 
   if (!product) {
-    return res.status(404).send({ error: "producto no encontredo" });
+    return res.status(404).json({ error: "Producto no encontrado" });
   }
-  res.send(product);
+  res.json(product);
 });
 export default router;
