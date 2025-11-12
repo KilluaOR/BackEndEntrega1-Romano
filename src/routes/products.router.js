@@ -24,4 +24,10 @@ router.get("/:pid", async (req, res) => {
   }
   res.json(product);
 });
+
+router.put("/:pid", async (req, res) => {
+  const { pid } = req.params;
+  const newProduct = req.body;
+});
+
 export default router;
