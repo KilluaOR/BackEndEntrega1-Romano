@@ -1,4 +1,5 @@
 import CartManager from "../managers/CartManager.js";
+
 const cartManager = new CartManager("./src/managers/data/carts.json");
 
 export const createCartControllers = async (req, res) => {

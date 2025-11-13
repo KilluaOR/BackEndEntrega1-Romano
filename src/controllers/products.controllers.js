@@ -1,3 +1,7 @@
+import ProductManager from "../managers/ProductManager.js";
+
+const productManager = new ProductManager("./src/managers/data/products.json");
+
 export const getProductsControllers = async (req, res) => {
   try {
     const products = await productManager.getProducts();

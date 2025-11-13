@@ -1,1 +1,26 @@
-[]
+[
+  {
+    "id": 1,
+    "status": true,
+    "thumbnails": [],
+    "title": "Zapatillas urbanas",
+    "description": "Modelo 2025",
+    "price": 27000,
+    "thumbnail": "sin-imagen.jpg",
+    "code": "ZAP001",
+    "stock": 15,
+    "category": "Calzado"
+  },
+  {
+    "id": 2,
+    "status": true,
+    "thumbnails": [],
+    "title": "Zapatillas",
+    "description": "Modelo 2023",
+    "price": 25080,
+    "thumbnail": "sin-imagen.jpg",
+    "code": "ZAP091",
+    "stock": 10,
+    "category": "Calzado"
+  }
+]
