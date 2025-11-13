@@ -15,18 +15,19 @@ app.use(express.urlencoded({ extended: true })); //Interperta datos enviados por
 app.use("/api/products", productsRouter);
 app.use("/api/carts", cartsRouter);
 
+//Handlebars
 app.engine("handlebars", handlebars.engine());
 app.set("views", __dirname + "/views");
 app.set("views engine", "handlebars");
 app.use(express.static(__dirname + "/views"));
 
-app.get("/", (req, res) => {
-  let testUser = {
-    name: "Coder",
-    last_name: "House",
-  };
-  res.render("index", testUser);
-});
+// app.get("/", (req, res) => {
+//   let testUser = {
+//     name: "Coder",
+//     last_name: "House",
+//   };
+//   res.render("index", testUser);
+// });
 
 app.listen(PORT, () => {
   console.log(`Servidor corriendo en el puerto ${PORT}`);
