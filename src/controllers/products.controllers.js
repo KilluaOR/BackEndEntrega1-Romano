@@ -1,6 +1,10 @@
+import path from "path";
 import ProductManager from "../managers/ProductManager.js";
 
-const productManager = new ProductManager("./src/managers/data/products.json");
+const __dirname = path.resolve();
+const productManager = new ProductManager(
+  path.join(__dirname, "src/managers/data/products.json")
+);
 
 export const getProductsControllers = async (req, res) => {
   try {
@@ -19,6 +23,13 @@ export const addProductControllers = async (req, res) => {
 
     if (addedProduct.error) {
       return res.status(400).json(addedProduct);
+    }
+
+    // Emitir evento de socket.io para actualizar la vista en tiempo real
+    const io = req.app.get("io");
+    if (io) {
+      const products = await productManager.getProducts();
+      io.emit("productos", products);
     }
 
     res.status(201).json(addedProduct);
@@ -80,6 +91,13 @@ export const deleteProductsControllers = async (req, res) => {
 
     if (result && result.error) {
       return res.status(404).json(result);
+    }
+
+    // Emitir evento de socket.io para actualizar la vista en tiempo real
+    const io = req.app.get("io");
+    if (io) {
+      const products = await productManager.getProducts();
+      io.emit("productos", products);
     }
 
     res.json({
