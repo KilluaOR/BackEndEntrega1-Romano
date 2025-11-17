@@ -1,7 +1,14 @@
-<h1>Lista de productos</h1>
+<h1 class="mb-4">Lista de productos</h1>
 
-<ul>
+<ul class="list-group">
   {{#each products}}
-    <li>{{this.title}} - ${{this.price}}</li>
+    <li
+      class="list-group-item d-flex justify-content-between align-items-center"
+    ><span><strong>{{this.title}}</strong></span>
+      -
+      <span class="badge bg-primary">${{this.price}}</span></li>
   {{/each}}
 </ul>
+
+<script src="/socket.io/socket.io.js"></script>
+<script src="/js/realtime.js"></script>
