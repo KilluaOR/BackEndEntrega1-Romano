@@ -2,50 +2,14 @@
   {
     "id": 1,
     "status": true,
-    "thumbnails": [],
-    "title": "Zapatillas urbanas",
-    "description": "Modelo 2025",
-    "price": 25000,
-    "thumbnail": "sin-imagen.jpg",
-    "code": "ZAP001",
-    "stock": 10,
-    "category": "Calzado"
-  },
-  {
-    "id": 2,
-    "status": true,
-    "thumbnails": [],
-    "title": "Zapatillas",
-    "description": "Modelo 2023",
-    "price": 25000,
-    "thumbnail": "sin-imagen.jpg",
-    "code": "ZAP201",
-    "stock": 19,
-    "category": "Calzado"
-  },
-  {
-    "id": 3,
-    "status": true,
-    "thumbnails": [],
-    "title": "Zapatillas",
-    "description": "Modelo 2023",
-    "price": 250000,
-    "thumbnail": "sin-imagen.jpg",
-    "code": "ZA321",
-    "stock": 8,
-    "category": "Calzado"
-  },
-  {
-    "id": 4,
-    "status": true,
     "thumbnails": [
-      "url1"
+      "url2"
     ],
     "title": "zapas",
-    "description": "zapatillas jordan nsx",
-    "code": "80js",
-    "price": 25000,
+    "description": "duduas",
+    "code": "udeh",
+    "price": 3342,
     "stock": 9,
-    "category": "zapatillas"
+    "category": "zapas"
   }
 ]
