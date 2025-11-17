@@ -9,7 +9,33 @@ socket.on("productos", (products) => {
   products.forEach((p) => {
     const li = document.createElement("li");
     li.id = `p-${p.id}`;
-    li.innerHTML = `<strong>${p.title}</strong> - $${p.price} <button onclick="eliminarProducto(${p.id})">Eliminar</button>`;
+    li.className =
+      "list-group-item d-flex justify-content-between align-items-center";
+
+    // Crear el contenido con la misma estructura que Handlebars
+    const titleSpan = document.createElement("span");
+    const strong = document.createElement("strong");
+    strong.textContent = p.title;
+    titleSpan.appendChild(strong);
+
+    const priceBadge = document.createElement("span");
+    priceBadge.className = "badge bg-primary";
+    priceBadge.textContent = `$${p.price}`;
+
+    // Solo agregar botón de eliminar si estamos en la página de realtime
+    if (document.getElementById("productForm")) {
+      const deleteBtn = document.createElement("button");
+      deleteBtn.className = "btn btn-danger btn-sm ms-2";
+      deleteBtn.textContent = "Eliminar";
+      deleteBtn.onclick = () => eliminarProducto(p.id);
+      li.appendChild(titleSpan);
+      li.appendChild(priceBadge);
+      li.appendChild(deleteBtn);
+    } else {
+      li.appendChild(titleSpan);
+      li.appendChild(priceBadge);
+    }
+
     list.appendChild(li);
   });
 });
