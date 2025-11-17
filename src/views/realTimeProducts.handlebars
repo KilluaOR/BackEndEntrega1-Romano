@@ -1,51 +1,68 @@
 <h1>Productos en tiempo real</h1>
 
 <h2>Agregar Producto</h2>
-<form id="productForm">
-  <div>
-    <label>Title:</label>
-    <input type="text" name="title" required />
+<form id="productForm" class="row g-3">
+  <div class="col-md-6">
+    <label class="form-label">Title:</label>
+    <input type="text" name="title" class="form-control" required />
   </div>
-  <div>
+  <div class="col-md-6">
     <label>Description:</label>
     <textarea name="description" required></textarea>
   </div>
-  <div>
-    <label>Code:</label>
-    <input type="text" name="code" required />
+  <div class="col-md-6">
+    <label class="form-label">Code:</label>
+    <input type="text" name="code" class="form-control" required />
   </div>
-  <div>
-    <label>Price:</label>
-    <input type="number" name="price" step="0.01" required />
+  <div class="col-md-6">
+    <label class="form-label">Price:</label>
+    <input
+      type="number"
+      name="price"
+      step="0.01"
+      class="form-control"
+      required
+    />
   </div>
-  <div>
-    <label>Stock:</label>
-    <input type="number" name="stock" required />
+  <div class="col-md-6">
+    <label class="form-label">Stock:</label>
+    <input type="number" name="stock" class="form-control" required />
   </div>
-  <div>
-    <label>Category:</label>
-    <input type="text" name="category" required />
+  <div class="col-md-6">
+    <label class="form-label">Category:</label>
+    <input type="text" name="category" class="form-control" required />
   </div>
-  <div>
-    <label>Status:</label>
-    <select name="status" required>
+  <div class="col-md-4">
+    <label for="inputState" class="form-label">Status:</label>
+    <select id="inputState" class="form-select" name="status" required>
       <option value="true">Activo</option>
       <option value="false">Inactivo</option>
     </select>
   </div>
   <div>
-    <label>Thumbnails (separados por comas):</label>
-    <input type="text" name="thumbnails" placeholder="url1, url2, url3" />
+    <label class="form-label">Thumbnails (separados por comas):</label>
+    <input
+      type="text"
+      name="thumbnails"
+      class="form-control"
+      placeholder="url1, url2, url3"
+    />
   </div>
-  <button type="submit">Agregar Producto</button>
+  <div class="col-12">
+    <button type="submit" class="btn btn-primary">Agregar Producto</button>
+  </div>
 </form>
 
-<h2>Lista de Productos</h2>
-<ul id="productList">
+<h2 class="mb-4">Lista de Productos</h2>
+<ul class="list-group" id="productList">
   {{#each products}}
-    <li id="p-{{this.id}}">
-      <strong>{{this.title}}</strong>
-      - ${{this.price}}
+    <li
+      id="p-{{this.id}}"
+      class="list-group-item d-flex justify-content-between align-items-center"
+    >
+      <span><strong>{{this.title}}</strong></span>
+      -
+      <span class="badge bg-primary">${{this.price}}</span>
     </li>
   {{/each}}
 </ul>
