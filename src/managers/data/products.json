@@ -1,15 +1,1 @@
-[
-  {
-    "id": 1,
-    "status": true,
-    "thumbnails": [
-      "url2"
-    ],
-    "title": "zapas",
-    "description": "duduas",
-    "code": "udeh",
-    "price": 3342,
-    "stock": 9,
-    "category": "zapas"
-  }
-]
+[]
