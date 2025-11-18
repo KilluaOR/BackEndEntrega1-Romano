@@ -21,11 +21,10 @@ router.get("/realtimeproducts", async (req, res) => {
 router.get("/productsList", async (req, res) => {
   try {
     const products = await productManager.getProducts();
-    const productsJson = JSON.stringify(products || []);
-    res.render("productsList", { products: products || [], productsJson });
+    res.render("productsList", { products: products || [] });
   } catch (error) {
     console.error("Error al obtener productos:", error);
-    res.render("productsList", { products: [], productsJson: "[]" });
+    res.render("productsList", { products: [] });
   }
 });
 
