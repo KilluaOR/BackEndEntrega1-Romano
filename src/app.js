@@ -20,8 +20,7 @@ app.use(express.urlencoded({ extended: true })); //Interperta datos enviados por
 //Archivos estáticos.
 app.use(express.static("src/public"));
 
-//Handlebars
-app.engine("handlebars", handlebars.engine());
+app.engine("handlebars", hbs.engine);
 app.set("view engine", "handlebars");
 app.set("views", path.resolve("src/views"));
 
