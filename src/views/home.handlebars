@@ -1,15 +1,29 @@
-<h1 class="mb-4">Lista de productos</h1>
-
-<ol id="productList" class="list-group list-group-numbered">
-  {{#each products}}
-    <li
-      class="list-group-item d-flex justify-content-between align-items-center"
+<nav class="navbar navbar-expand-lg bg-body-tertiary">
+  <div class="container-fluid">
+    <h1>Bienvenido al sitio de productos</h1>
+    <button
+      class="navbar-toggler"
+      type="button"
+      data-bs-toggle="collapse"
+      data-bs-target="#navbarNav"
+      aria-controls="navbarNav"
+      aria-expanded="false"
+      aria-label="Toggle navigation"
     >
-      <span><strong>{{this.title}}</strong></span>
-      <span class="badge bg-primary">${{this.price}}</span>
-    </li>
-  {{/each}}
-</ol>
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav">
+        <li class="nav-item">
+          <a class="nav-link" href="/">Inicio</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/realTimeProducts">Agregar producto</a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
 
 <script src="/socket.io/socket.io.js"></script>
 <script src="/js/realtime.js"></script>
