@@ -18,4 +18,15 @@ router.get("/realtimeproducts", async (req, res) => {
   res.render("realTimeProducts", { products });
 });
 
+router.get("/productsList", async (req, res) => {
+  try {
+    const products = await productManager.getProducts();
+    const productsJson = JSON.stringify(products || []);
+    res.render("productsList", { products: products || [], productsJson });
+  } catch (error) {
+    console.error("Error al obtener productos:", error);
+    res.render("productsList", { products: [], productsJson: "[]" });
+  }
+});
+
 export default router;
