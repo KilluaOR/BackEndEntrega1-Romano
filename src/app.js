@@ -1,6 +1,7 @@
 import express from "express";
 import handlebars from "express-handlebars";
 import { Server } from "socket.io";
+import { fileURLToPath } from "url";
 import path from "path";
 import productsRouter from "./routes/products.router.js";
 import cartsRouter from "./routes/carts.router.js";
@@ -10,25 +11,28 @@ import ProductManager from "./managers/ProductManager.js";
 const app = express();
 const PORT = 8080;
 
-//Para usar rutas absolutas sin romper nada.
-const __dirname = path.resolve();
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 // Middleware para manejar JSON.
 app.use(express.json()); //Interpreta datos enviados en fromato JSON.
 app.use(express.urlencoded({ extended: true })); //Interperta datos enviados por formularios.
 
 //Archivos estáticos.
-app.use(express.static("src/public"));
+app.use(express.static(path.join(__dirname, "public")));
 
 //Handlebars
 app.engine(
   "handlebars",
   handlebars.engine({
+    defaultLayout: "main",
+    layoutsDir: path.join(__dirname, "views/layouts"),
     partialsDir: path.join(__dirname, "views/partials"),
   })
 );
+
 app.set("view engine", "handlebars");
-app.set("views", path.resolve("src/views"));
+app.set("views", path.join(__dirname, "views"));
 
 // Rutas principales
 app.use("/api/products", productsRouter);
@@ -46,7 +50,7 @@ app.set("io", io);
 
 //Manager para websockets.
 const productManager = new ProductManager(
-  path.join(__dirname, "src/managers/data/products.json")
+  path.join(__dirname, "managers/data/products.json")
 );
 
 //Eventos del websocket.

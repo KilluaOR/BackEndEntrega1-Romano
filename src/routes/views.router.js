@@ -1,31 +1,16 @@
 import { Router } from "express";
-import path from "path";
-import ProductManager from "../managers/ProductManager.js";
+import {
+  viewsHomeController,
+  viewsPLController,
+  viewsRTPController,
+} from "../controllers/views.controller.js";
 
 const router = Router();
-const __dirname = path.resolve();
-const productManager = new ProductManager(
-  path.join(__dirname, "src/managers/data/products.json")
-);
 
-router.get("/", async (req, res) => {
-  const products = await productManager.getProducts();
-  res.render("home", { products });
-});
+router.get("/", viewsHomeController);
 
-router.get("/realtimeproducts", async (req, res) => {
-  const products = await productManager.getProducts();
-  res.render("realTimeProducts", { products });
-});
+router.get("/realtimeproducts", viewsRTPController);
 
-router.get("/productsList", async (req, res) => {
-  try {
-    const products = await productManager.getProducts();
-    res.render("productsList", { products: products || [] });
-  } catch (error) {
-    console.error("Error al obtener productos:", error);
-    res.render("productsList", { products: [] });
-  }
-});
+router.get("/productsList", viewsPLController);
 
 export default router;
