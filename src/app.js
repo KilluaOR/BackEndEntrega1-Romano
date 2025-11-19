@@ -21,7 +21,12 @@ app.use(express.urlencoded({ extended: true })); //Interperta datos enviados por
 app.use(express.static("src/public"));
 
 //Handlebars
-app.engine("handlebars", handlebars.engine());
+app.engine(
+  "handlebars",
+  handlebars.engine({
+    partialsDir: path.join(__dirname, "views/partials"),
+  })
+);
 app.set("view engine", "handlebars");
 app.set("views", path.resolve("src/views"));
 
