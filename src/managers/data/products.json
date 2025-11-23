@@ -1,1 +1,35 @@
-[]
+[
+  {
+    "id": 1,
+    "status": true,
+    "thumbnails": [],
+    "title": "fgige",
+    "description": "veieuoged",
+    "code": "4131",
+    "price": "449466",
+    "stock": "5",
+    "category": "rgri"
+  },
+  {
+    "id": 2,
+    "status": true,
+    "thumbnails": [],
+    "title": "fgige",
+    "description": "veieuoged",
+    "code": "41531",
+    "price": "449466",
+    "stock": "5",
+    "category": "rgri"
+  },
+  {
+    "id": 3,
+    "status": true,
+    "thumbnails": [],
+    "title": "fgige",
+    "description": "veieuoged",
+    "code": "431",
+    "price": "449466",
+    "stock": "5",
+    "category": "rgri"
+  }
+]

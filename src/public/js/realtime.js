@@ -1,6 +1,11 @@
 const socket = io();
 
 socket.on("productos", (products) => {
+  console.log("Productos recibidos por WebSocket:", products);
+  console.log("Cantidad de productos:", products.length);
+  products.forEach((p, index) => {
+    console.log(`Producto ${index + 1}:`, p);
+  });
   const list = document.getElementById("productList");
   if (!list) return;
 
