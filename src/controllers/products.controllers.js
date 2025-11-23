@@ -30,6 +30,7 @@ export const addProductControllers = async (req, res) => {
     if (io) {
       const products = await productManager.getProducts();
       io.emit("productos", products);
+      console.log("Producto agregado por POST - Emitidos productos:", products);
     }
 
     res.status(201).json(addedProduct);
@@ -69,6 +70,16 @@ export const updateProductControllers = async (req, res) => {
     if (result && result.error) {
       return res.status(404).json(result);
     }
+    // Emitir evento de socket.io para actualizar la vista
+    const io = req.app.get("io");
+    if (io) {
+      const products = await productManager.getProducts();
+      io.emit("productos", products);
+      console.log(
+        "Producto actualizado por PUT - Emitidos productos:",
+        products
+      );
+    }
 
     return res.json({
       message: "Producto actualizado correctamente",
@@ -98,6 +109,10 @@ export const deleteProductsControllers = async (req, res) => {
     if (io) {
       const products = await productManager.getProducts();
       io.emit("productos", products);
+      console.log(
+        "Producto eliminado por DELETE - Emitidos productos:",
+        products
+      );
     }
 
     res.json({

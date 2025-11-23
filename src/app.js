@@ -64,8 +64,10 @@ io.on("connection", async (socket) => {
   //Cuando se crea un producto desde realtime
   socket.on("nuevoProducto", async (product) => {
     await productManager.addProduct(product);
-    io.emit("productos", await productManager.getProducts());
-    console.log("Producto recibido por WS:", product);
+    const products = await productManager.getProducts();
+    io.emit("productos", products);
+    console.log("Producto recibido por WebSocket:", product);
+    console.log("Lista completa de productos después de agregar:", products);
   });
 
   socket.on("eliminarProducto", async (id) => {
