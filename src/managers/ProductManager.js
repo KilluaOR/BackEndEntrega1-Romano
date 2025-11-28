@@ -108,3 +108,113 @@ class ProductManager {
 }
 
 export default ProductManager;
+
+// import { productModel } from "../models/product.model.js";
+
+// export default class ProductManager {
+//   async getProducts() {
+//     return await productModel.find();
+//   }
+
+//   async getProductById(id) {
+//     return await productModel.findById(id);
+//   }
+
+//   async addProduct(data) {
+//     return await productModel.create(data);
+//   }
+
+//   async updateProduct(id, data) {
+//     return await productModel.findByIdAndUpdate(id, data, { new: true });
+//   }
+
+//   async deleteProduct(id) {
+//     return await productModel.findByIdAndDelete(id);
+//   }
+// }
+
+// import { productModel } from "../models/product.model.js";
+
+// export default class ProductManager {
+//   // No necesita constructor
+
+//   async getProducts() {
+//     return await productModel.find().lean();
+//   }
+
+//   async addProduct(product) {
+//     try {
+//       const requiredFields = [
+//         "title",
+//         "description",
+//         "code",
+//         "price",
+//         "stock",
+//         "category",
+//       ];
+
+//       const missingFields = requiredFields.filter((field) => !product[field]);
+//       if (missingFields.length > 0) {
+//         return { error: `Faltan campos obligatorios: ${missingFields.join(", ")}` };
+//       }
+
+//       const codeExists = await productModel.findOne({ code: product.code });
+//       if (codeExists) {
+//         return { error: `El código "${product.code}" ya existe. Debe ser único.` };
+//       }
+
+//       const newProduct = await productModel.create({
+//         status: product.status !== undefined ? product.status : true,
+//         thumbnails: product.thumbnails || [],
+//         ...product,
+//       });
+
+//       return newProduct;
+//     } catch (error) {
+//       throw new Error("Error al agregar producto: " + error.message);
+//     }
+//   }
+
+//   async getProductById(id) {
+//     try {
+//       const product = await productModel.findById(id).lean();
+//       return product || null;
+//     } catch (err) {
+//       return null; // si el id no tiene formato válido, que no rompa
+//     }
+//   }
+
+//   async updateProduct(id, updatedFields) {
+//     try {
+//       delete updatedFields.id; // No permitir cambiar _id
+
+//       const updatedProduct = await productModel.findByIdAndUpdate(
+//         id,
+//         updatedFields,
+//         { new: true }
+//       ).lean();
+
+//       if (!updatedProduct) {
+//         return { error: `Producto con id ${id} no encontrado` };
+//       }
+
+//       return updatedProduct;
+//     } catch (error) {
+//       throw new Error("Error al actualizar producto: " + error.message);
+//     }
+//   }
+
+//   async deleteProduct(id) {
+//     try {
+//       const deletedProduct = await productModel.findByIdAndDelete(id).lean();
+
+//       if (!deletedProduct) {
+//         return { error: `Producto con id ${id} no encontrado` };
+//       }
+
+//       return deletedProduct;
+//     } catch (error) {
+//       throw new Error("Error al eliminar producto: " + error.message);
+//     }
+//   }
+// }

@@ -7,6 +7,8 @@ import productsRouter from "./routes/products.router.js";
 import cartsRouter from "./routes/carts.router.js";
 import viewsRouter from "./routes/views.router.js";
 import ProductManager from "./managers/ProductManager.js";
+import mongoose from "mongoose";
+import ProductsModel from "./models/product.model.js";
 
 const app = express();
 const PORT = 8080;
@@ -74,4 +76,26 @@ io.on("connection", async (socket) => {
     await productManager.deleteProduct(id);
     io.emit("productos", await productManager.getProducts());
   });
+});
+
+mongoose
+  .connect("mongodb://127.0.0.1:27017/demo-db-1")
+  .then(() => {
+    console.log("🚀 ~ mongoose.connect ~ conectado a la base de datos");
+    ProductsModel.create({ name: "Hola Compass, aparecé wachaaa" })
+      .then(() => console.log("🟢 Documento creado en demo-db-1"))
+      .catch((err) => console.log("❌ Error creando documento:", err));
+
+    app.listen(PORT, () => {
+      console.log(
+        `🚀 ~ express.listen ~ servidor corriendo en el puerto ${PORT}`
+      );
+    });
+  })
+  .catch((error) => {
+    console.log("🚀 ~ error:", error);
+  });
+
+mongoose.connection.once("open", () => {
+  console.log("🌈 Conectado a Mongo desde Compass + Mongoose");
 });
