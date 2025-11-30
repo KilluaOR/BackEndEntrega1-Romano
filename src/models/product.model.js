@@ -1,6 +1,8 @@
 import mongoose from "mongoose";
+import mongoosePaginate from "mongoose-paginate-v2";
 import validator from "validator";
 
+const productCollection = "products";
 //Schema
 const productSchema = new mongoose.Schema({
   //_id se crea automaticamente, no hace falta definirlo (ObjectID)

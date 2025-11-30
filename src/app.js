@@ -1,12 +1,12 @@
 import express from "express";
 import handlebars from "express-handlebars";
 import { Server } from "socket.io";
+import http from "http";
 import { fileURLToPath } from "url";
 import path from "path";
 import productsRouter from "./routes/products.router.js";
 import cartsRouter from "./routes/carts.router.js";
 import viewsRouter from "./routes/views.router.js";
-import ProductManager from "./managers/ProductManager.js";
 import mongoose from "mongoose";
 import ProductsModel from "./models/product.model.js";
 
@@ -16,7 +16,7 @@ const PORT = 8080;
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// Middleware para manejar JSON.
+// Middleware
 app.use(express.json()); //Interpreta datos enviados en fromato JSON.
 app.use(express.urlencoded({ extended: true })); //Interperta datos enviados por formularios.
 
@@ -41,19 +41,12 @@ app.use("/api/products", productsRouter);
 app.use("/api/carts", cartsRouter);
 app.use("/", viewsRouter);
 
-//SOCKET.IO
-const httpServer = app.listen(PORT, () => {
-  console.log(`Servidor corriendo en el puerto ${PORT}`);
-});
+//SERVER + SOCKET.IO
+const httpServer = http.createServer(app);
 const io = new Server(httpServer);
 
 // Hacer io disponible en las rutas
 app.set("io", io);
-
-//Manager para websockets.
-const productManager = new ProductManager(
-  path.join(__dirname, "managers/data/products.json")
-);
 
 //Eventos del websocket.
 
@@ -61,32 +54,30 @@ io.on("connection", async (socket) => {
   console.log("Cliente conectado por WebSocket");
 
   //Enviar productos.
-  socket.emit("productos", await productManager.getProducts());
+  const products = await ProductsModel.find().lean();
+  socket.emit("productos", products);
 
   //Cuando se crea un producto desde realtime
   socket.on("nuevoProducto", async (product) => {
-    await productManager.addProduct(product);
-    const products = await productManager.getProducts();
-    io.emit("productos", products);
-    console.log("Producto recibido por WebSocket:", product);
-    console.log("Lista completa de productos después de agregar:", products);
+    await ProductsModel.create(product);
+    const updatedproducts = await ProductsModel.find().lean(); //.lean() pide un objeto plano, limpio tipo JSON.
+    io.emit("productos", updatedproducts);
   });
 
+  //Eliminar prod. desde socket
   socket.on("eliminarProducto", async (id) => {
-    await productManager.deleteProduct(id);
-    io.emit("productos", await productManager.getProducts());
+    await ProductsModel.findByIdAndDelete(id);
+    const updatedProducts = await ProductsModel.find().lean();
+    io.emit("productos", updatedProducts);
   });
 });
 
 mongoose
-  .connect("mongodb://127.0.0.1:27017/demo-db-1")
+  .connect("mongodb://127.0.0.1:27017/backFinal-Romano")
   .then(() => {
     console.log("🚀 ~ mongoose.connect ~ conectado a la base de datos");
-    ProductsModel.create({ name: "Hola Compass, aparecé wachaaa" })
-      .then(() => console.log("🟢 Documento creado en demo-db-1"))
-      .catch((err) => console.log("❌ Error creando documento:", err));
 
-    app.listen(PORT, () => {
+    httpServer.listen(PORT, () => {
       console.log(
         `🚀 ~ express.listen ~ servidor corriendo en el puerto ${PORT}`
       );
@@ -95,7 +86,3 @@ mongoose
   .catch((error) => {
     console.log("🚀 ~ error:", error);
   });
-
-mongoose.connection.once("open", () => {
-  console.log("🌈 Conectado a Mongo desde Compass + Mongoose");
-});
