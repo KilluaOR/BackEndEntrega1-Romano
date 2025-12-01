@@ -3,48 +3,88 @@ import mongoosePaginate from "mongoose-paginate-v2";
 import validator from "validator";
 
 const productCollection = "products";
+
 //Schema
-const productSchema = new mongoose.Schema({
-  //_id se crea automaticamente, no hace falta definirlo (ObjectID)
+const productSchema = new mongoose.Schema(
+  {
+    //_id se crea automaticamente, no hace falta definirlo (ObjectID)
+    title: {
+      type: String,
+      required: [true, "El título es obligatorio"],
+      trim: true,
+    },
 
-  title: {
-    type: String,
-    // required: true,
-  },
-  description: {
-    type: String,
-    // required: true,
-  },
-  price: {
-    type: Number,
-    // required: true,
-  },
-  stock: {
-    type: Number,
-    // required: true,
-  },
-  category: {
-    type: String,
-    // required: true,
-  },
-  code: {
-    type: String,
-    // required: true,
-    unique: true,
-    validate: {
-      validator: (valor) => {
-        const esValido = validator.isAlphanumeric(valor); //true o false
+    description: {
+      type: String,
+      default: "",
+      trim: true,
+    },
 
-        console.log("esValido", esValido);
+    price: {
+      type: Number,
+      required: [true, "El precio es obligatorio"],
+      min: [0, "El precio no puede ser negativo"],
+    },
 
-        return esValido;
+    code: {
+      type: String,
+      required: [true, "El código es obligatorio"],
+      unique: true,
+      trim: true,
+      validate: {
+        validator: (valor) => {
+          const esValido = validator.isAlphanumeric(valor, "es-ES"); //true o false
+          console.log("esValido", esValido);
+          return esValido;
+        },
+        message: "El código solo puede tener letras y números",
       },
-      message: "",
+    },
+
+    stock: {
+      type: Number,
+      default: 0,
+      min: [0, "El stock no puede ser negativo"],
+      required: true,
+      validate: {
+        validator: Number.isInteger,
+        message: "El stock debe ser un número entero",
+      },
+    },
+
+    category: {
+      type: String,
+      required: true,
+      trim: true,
+      lowercase: true,
+    },
+
+    thumbnails: {
+      type: [String],
+      default: [],
+      validate: {
+        validator: function (arr) {
+          //cada item debe tener una URL válida
+          return arr.every((url) => validator.isURL(url));
+        },
+        message: "Cada imagen debe ser una URL válida",
+      },
+    },
+
+    status: {
+      type: Boolean,
+      default: true,
     },
   },
-});
+  {
+    timestamps: true,
+  }
+);
+
+//Plug in de paginación
+productSchema.plugin(mongoosePaginate);
 
 //Modelo
-const ProductsModel = mongoose.model("Product", productSchema);
+const ProductsModel = mongoose.model(productCollection, productSchema);
 
 export default ProductsModel;
