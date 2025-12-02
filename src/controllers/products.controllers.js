@@ -2,8 +2,39 @@ import ProductsModel from "../models/product.model.js";
 
 export const getProductsControllers = async (req, res) => {
   try {
-    const products = await ProductsModel.find().lean();
-    res.json(products);
+    const { limit, page, sort, query } = req.query;
+    console.log(req.query);
+    let filter = {};
+    if (query === "true" || query === "false") {
+      filter.status = query === "true"; //Convierte a boolean
+    } else if (query) {
+      filter.category = query;
+    }
+
+    let sortOption = {};
+    if (sort === "asc") sortOption.price = 1;
+    if (sort === "desc") sortOption.price = -1;
+
+    const options = {
+      limit: parseInt(limit) || 10,
+      page: parseInt(page) || 1,
+      sort: sortOption,
+    };
+    console.log(options);
+
+    const result = await ProductsModel.paginate(filter, options);
+    console.log(result);
+
+    res.json({
+      status: "success",
+      payload: result.docs,
+      totalPages: result.totalPages,
+      prevPage: result.prevPage,
+      nextPage: result.nextPage,
+      page: result.page,
+      hasPrevPage: result.hasPrevPage,
+      hasNextPage: result.hasNextPage,
+    });
   } catch (error) {
     console.error("Error al obtener productos:", error);
     res.status(500).json({ error: "Error interno al obtener productos" });
