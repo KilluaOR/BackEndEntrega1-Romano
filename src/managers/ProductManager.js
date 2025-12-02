@@ -109,13 +109,13 @@
 
 // export default ProductManager;
 
-import { productModel } from "../models/product.model.js";
+import ProductsModel from "../models/product.model.js";
 
 export default class ProductManager {
   // No necesita constructor
 
   async getProducts() {
-    return await productModel.find().lean();
+    return await ProductsModel.find().lean();
   }
 
   async addProduct(product) {
@@ -136,14 +136,14 @@ export default class ProductManager {
         };
       }
 
-      const codeExists = await productModel.findOne({ code: product.code });
+      const codeExists = await ProductsModel.findOne({ code: product.code });
       if (codeExists) {
         return {
           error: `El código "${product.code}" ya existe. Debe ser único.`,
         };
       }
 
-      const newProduct = await productModel.create({
+      const newProduct = await ProductsModel.create({
         status: product.status !== undefined ? product.status : true,
         thumbnails: product.thumbnails || [],
         ...product,
@@ -157,7 +157,7 @@ export default class ProductManager {
 
   async getProductById(id) {
     try {
-      const product = await productModel.findById(id).lean();
+      const product = await ProductsModel.findById(id).lean();
       return product || null;
     } catch (err) {
       return null; // si el id no tiene formato válido, que no rompa
@@ -168,7 +168,7 @@ export default class ProductManager {
     try {
       delete updatedFields.id; // No permitir cambiar _id
 
-      const updatedProduct = await productModel
+      const updatedProduct = await ProductsModel
         .findByIdAndUpdate(id, updatedFields, { new: true })
         .lean();
 
@@ -184,7 +184,7 @@ export default class ProductManager {
 
   async deleteProduct(id) {
     try {
-      const deletedProduct = await productModel.findByIdAndDelete(id).lean();
+      const deletedProduct = await ProductsModel.findByIdAndDelete(id).lean();
 
       if (!deletedProduct) {
         return { error: `Producto con id ${id} no encontrado` };
