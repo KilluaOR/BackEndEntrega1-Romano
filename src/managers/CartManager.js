@@ -55,4 +55,38 @@ export default class CartManager {
 
     return cart;
   }
+
+  async updateProductQuantity(cid, pid, quantity) {
+    const cart = await CartModel.findById(cid);
+
+    if (!cart) {
+      return { error: `Carrito con id ${cid} no encontrado` };
+    }
+
+    const productInCart = cart.prodcuts.find(
+      (item) => intem.product.toString() === pid
+    );
+
+    if (!productInCart) {
+      return { error: `Producto con id ${pid} no está en el carrito` };
+    }
+
+    productInCart.quiantity = quantity;
+    await cart.save();
+
+    return cart;
+  }
+
+  async deleteAllProducts(cid) {
+    const cart = await CartModel.findById(cid);
+
+    if (!cart) {
+      return { error: `Carrito con id ${cid} no encontrado` };
+    }
+
+    cart.products = [];
+    await cart.save();
+
+    return cart;
+  }
 }

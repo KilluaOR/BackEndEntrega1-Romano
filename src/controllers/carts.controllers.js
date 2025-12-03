@@ -66,3 +66,52 @@ export const deleteProductFromCartControllers = async (req, res) => {
     res.status(500).json({ error: "Error interno al eliminar producto" });
   }
 };
+
+export const updateProductQuantityInCartControllers = async (res, res) => {
+  try {
+    const { cid, pid } = req.params;
+    const { quantity } = req.body;
+
+    if (!quantity || quantity < 1) {
+      return res
+        .status(400)
+        .json({ error: "La acnatidad debe ser un número mayor a 0" });
+    }
+
+    const result = await cartManager.updateProductQuantity(cid, pid, quantity);
+
+    if (result?.error) {
+      return res.status(404).json(result);
+    }
+
+    res.json({
+      status: "success",
+      message: "Cantidad actualizada correctamente",
+      cart: result,
+    });
+  } catch (error) {
+    console.error("Error interno al actualizar cantidad:", error);
+    res.status(500).json({ error: "Error interno al actualizar cantidad" });
+  }
+};
+
+export const deleteAllProductsFromCartControllers = async (req, res) => {
+  try {
+    const { cid } = req.params;
+
+    const result = await cartManager.deleteAllProducts(cid);
+
+    if (result?.error) {
+      return res.status(404).json(result);
+    }
+
+    res.json({
+      status: "success",
+      message: "Todos los productos fueron eliminados del carrito",
+      cart: result,
+    });
+  } catch (error) {
+    console.error("Error al eliminar productos del carrito:", error);
+    res.status(500).json({ error: "Error interno al eliminar productos" });
+  }
+};
