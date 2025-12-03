@@ -14,7 +14,7 @@ export const getCartByIdControllers = async (req, res) => {
     const cart = await cartManager.getCartById(cid);
 
     if (!cart) {
-      return res.status(400).json({ error: "Carrito no encontrado" });
+      return res.status(404).json({ error: "Carrito no encontrado" });
     }
     res.json({ status: "success", payload: cart });
   } catch (error) {
