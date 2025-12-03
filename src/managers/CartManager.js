@@ -64,7 +64,7 @@ export default class CartManager {
     }
 
     const productInCart = cart.prodcuts.find(
-      (item) => intem.product.toString() === pid
+      (item) => item.product.toString() === pid
     );
 
     if (!productInCart) {
