@@ -71,7 +71,7 @@ export const viewsProductDetailController = async (req, res) => {
     if (!product) {
       return res
         .status(404)
-        .render({ error: "El producto solicitado no existe" });
+        .render("productDetail", { error: "El producto solicitado no existe" });
     }
     return res.render("productDetail", { product });
   } catch (error) {
