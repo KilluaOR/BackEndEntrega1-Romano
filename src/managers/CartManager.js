@@ -21,6 +21,11 @@ export default class CartManager {
       return { error: `Carrito con id ${cid} no encontrado` };
     }
 
+    const product = await ProductsModel.findById(pid);
+    if (!product) {
+      return { error: `Producto con id ${pid} no encontrado` };
+    }
+
     const existingProduct = cart.products.find(
       (item) => item.product.toString() === pid
     );

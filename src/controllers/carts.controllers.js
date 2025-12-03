@@ -1,3 +1,4 @@
+import mongoose from "mongoose";
 import CartManager from "../managers/CartManager.js";
 
 const cartManager = new CartManager();
@@ -5,10 +6,15 @@ const cartManager = new CartManager();
 export const getCartByIdControllers = async (req, res) => {
   try {
     const { cid } = req.params;
+
+    if (!mongoose.Types.ObjectId.isValid(cid)) {
+      return res.status(400).json({ error: "ID del carrito inválido" });
+    }
+
     const cart = await cartManager.getCartById(cid);
 
     if (!cart) {
-      return res.status(404).json({ error: "Carrito no encontrado" });
+      return res.status(400).json({ error: "Carrito no encontrado" });
     }
     res.json({ status: "success", payload: cart });
   } catch (error) {
@@ -30,6 +36,15 @@ export const createCartControllers = async (req, res) => {
 export const addProductToCartControllers = async (req, res) => {
   try {
     const { cid, pid } = req.params;
+
+    if (!mongoose.Types.ObjectId.isValid(cid)) {
+      return res.status(400).json({ error: "ID del carrito inválido" });
+    }
+
+    if (!mongoose.Types.ObjectId.isValid(pid)) {
+      return res.status(400).json({ error: "ID del producto inválido" });
+    }
+
     const updatedCart = await cartManager.addProductToCart(cid, pid);
 
     if (updatedCart.error) {
@@ -49,6 +64,14 @@ export const addProductToCartControllers = async (req, res) => {
 export const deleteProductFromCartControllers = async (req, res) => {
   try {
     const { cid, pid } = req.params;
+
+    if (!mongoose.Types.ObjectId.isValid(cid)) {
+      return res.status(400).json({ error: "ID del carrito inválido" });
+    }
+
+    if (!mongoose.Types.ObjectId.isValid(pid)) {
+      return res.status(400).json({ error: "ID del producto inválido" });
+    }
 
     const result = await cartManager.deleteProduct(cid, pid);
 
@@ -71,6 +94,14 @@ export const updateProductQuantityInCartControllers = async (req, res) => {
   try {
     const { cid, pid } = req.params;
     const { quantity } = req.body;
+
+    if (!mongoose.Types.ObjectId.isValid(cid)) {
+      return res.status(400).json({ error: "ID del carrito inválido" });
+    }
+
+    if (!mongoose.Types.ObjectId.isValid(pid)) {
+      return res.status(400).json({ error: "ID del producto inválido" });
+    }
 
     if (!quantity || quantity < 1) {
       return res
@@ -99,6 +130,10 @@ export const deleteAllProductsFromCartControllers = async (req, res) => {
   try {
     const { cid } = req.params;
 
+    if (!mongoose.Types.ObjectId.isValid(cid)) {
+      return res.status(400).json({ error: "ID del carrito inválido" });
+    }
+
     const result = await cartManager.deleteAllProducts(cid);
 
     if (result?.error) {
@@ -121,8 +156,12 @@ export const updateAllProductsInCartControllers = async (req, res) => {
     const { cid } = req.params;
     const { products } = req.body;
 
+    if (!mongoose.Types.ObjectId.isValid(cid)) {
+      return res.status(400).json({ error: "ID del carrito inválido" });
+    }
+
     if (!products || !Array.isArray(products)) {
-      return res.status(404).json({
+      return res.status(400).json({
         error: "Se debe enviar un arreglo de productos en el body",
       });
     }
@@ -140,6 +179,6 @@ export const updateAllProductsInCartControllers = async (req, res) => {
     });
   } catch (error) {
     console.error("Error al actualizar productos del carrito:", error);
-    res.status(505).json({ error: "Error interno al actualizar productos" });
+    res.status(500).json({ error: "Error interno al actualizar productos" });
   }
 };

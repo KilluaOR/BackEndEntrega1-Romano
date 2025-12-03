@@ -34,7 +34,6 @@ const productSchema = new mongoose.Schema(
       validate: {
         validator: (valor) => {
           const esValido = validator.isAlphanumeric(valor, "es-ES"); //true o false
-          console.log("esValido", esValido);
           return esValido;
         },
         message: "El código solo puede tener letras y números",

@@ -1,3 +1,4 @@
+import mongoose from "mongoose";
 import ProductsModel from "../models/product.model.js";
 
 export const getProductsControllers = async (req, res) => {
@@ -61,6 +62,10 @@ export const getProductsByIdControllers = async (req, res) => {
   try {
     const { pid } = req.params;
 
+    if (!mongoose.Types.ObjectId.isValid(pid)) {
+      return res.status(400).json({ error: "ID de producto inválido" });
+    }
+
     const product = await ProductsModel.findById(pid).lean();
 
     if (!product) {
@@ -82,11 +87,11 @@ export const updateProductControllers = async (req, res) => {
       pid,
       req.body,
       { new: true, runValidators: true }
-    ).lean();
+    );
 
     //Validación básica
     if (!updatedProduct) {
-      return res.status(400).json({ error: "Producto no encontrado" });
+      return res.status(404).json({ error: "Producto no encontrado" });
     }
     const io = req.app.get("io");
     if (io) {

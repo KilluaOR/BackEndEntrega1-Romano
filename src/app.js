@@ -16,8 +16,6 @@ const PORT = 8080;
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-connectDB();
-
 // Middleware
 app.use(express.json()); //Interpreta datos enviados en fromato JSON.
 app.use(express.urlencoded({ extended: true })); //Interperta datos enviados por formularios.
@@ -55,26 +53,53 @@ app.set("io", io);
 io.on("connection", async (socket) => {
   console.log("Cliente conectado por WebSocket");
 
-  //Enviar productos.
-  const products = await ProductsModel.find().lean();
-  socket.emit("productos", products);
+  try {
+    //Enviar productos.
+    const products = await ProductsModel.find().lean();
+    socket.emit("productos", products);
+  } catch (error) {
+    console.error("Error al obtener productos:", error);
+    socket.emit("error", { message: "Error al cargar productos" });
+  }
 
   //Cuando se crea un producto desde realtime
   socket.on("nuevoProducto", async (product) => {
-    await ProductsModel.create(product);
-    const updatedproducts = await ProductsModel.find().lean(); //.lean() pide un objeto plano, limpio tipo JSON.
-    io.emit("productos", updatedproducts);
+    try {
+      await ProductsModel.create(product);
+      const updatedproducts = await ProductsModel.find().lean();
+      io.emit("productos", updatedproducts);
+    } catch (error) {
+      console.error("Error al crear producto:", error);
+      socket.emit("error", { message: "Error al crear producto" });
+    }
   });
 
   //Eliminar prod. desde socket
   socket.on("eliminarProducto", async (id) => {
-    await ProductsModel.findByIdAndDelete(id);
-    const updatedProducts = await ProductsModel.find().lean();
-    io.emit("productos", updatedProducts);
+    try {
+      await ProductsModel.findByIdAndDelete(id);
+      const updatedProducts = await ProductsModel.find().lean();
+      io.emit("productos", updatedProducts);
+    } catch (error) {
+      console.error("Error al eliminar producto:", error);
+      socket.emit("error", { message: "Error al eliminar producto" });
+    }
   });
 });
 
 // Iniciar servidor (después de la conexión a la DB)
-httpServer.listen(PORT, () => {
-  console.log(`🚀 ~ express.listen ~ servidor corriendo en el puerto ${PORT}`);
-});
+const startServer = async () => {
+  try {
+    await connectDB();
+    httpServer.listen(PORT, () => {
+      console.log(
+        `🚀 ~ express.listen ~ servidor corriendo en el puerto ${PORT}`
+      );
+    });
+  } catch (error) {
+    console.error("Error al iniciar el servidor:", error);
+    process.exit(1);
+  }
+};
+
+startServer();

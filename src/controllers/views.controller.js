@@ -2,13 +2,23 @@ import ProductsModel from "../models/product.model.js";
 import CartModel from "../models/cart.model.js";
 
 export const viewsHomeController = async (req, res) => {
-  const products = await ProductsModel.find().lean();
-  res.render("home", { products });
+  try {
+    const products = await ProductsModel.find().lean();
+    res.render("home", { products });
+  } catch (error) {
+    console.error("Error al obtener productos:", error);
+    res.render("home", { products: [] });
+  }
 };
 
 export const viewsRTPController = async (req, res) => {
-  const products = await ProductsModel.find().lean();
-  res.render("realTimeProducts", { products });
+  try {
+    const products = await ProductsModel.find().lean();
+    res.render("realTimeProducts", { products });
+  } catch (error) {
+    console.error("Error al obtener productos:", error);
+    res.render("realTimeProducts", { products: [] });
+  }
 };
 
 export const viewsPLController = async (req, res) => {
@@ -61,7 +71,7 @@ export const viewsProductDetailController = async (req, res) => {
     if (!product) {
       return res
         .status(404)
-        .json({ error: "El producto solicitado no existe" });
+        .render({ error: "El producto solicitado no existe" });
     }
     return res.render("productDetail", { product });
   } catch (error) {
