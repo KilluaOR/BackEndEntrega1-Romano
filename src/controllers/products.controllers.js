@@ -107,7 +107,7 @@ export const deleteProductsControllers = async (req, res) => {
   try {
     const { pid } = req.params;
 
-    const deleted = await ProductsModel.findByIdAndDelete(pid).lean();
+    const deleted = await ProductsModel.findByIdAndDelete(pid);
 
     if (!deleted) {
       return res.status(404).json({ error: "Producto no encontrado" });

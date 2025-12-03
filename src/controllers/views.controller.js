@@ -1,19 +1,13 @@
-import path from "path";
-import ProductsModel from "../models/product.model";
-import CartModel from "../models/cart.model";
-
-const __dirname = path.resolve();
-const productManager = new ProductManager(
-  path.join(__dirname, "src/managers/data/products.json")
-);
+import ProductsModel from "../models/product.model.js";
+import CartModel from "../models/cart.model.js";
 
 export const viewsHomeController = async (req, res) => {
-  const products = await productManager.getProducts();
+  const products = await ProductsModel.find().lean();
   res.render("home", { products });
 };
 
 export const viewsRTPController = async (req, res) => {
-  const products = await productManager.getProducts();
+  const products = await ProductsModel.find().lean();
   res.render("realTimeProducts", { products });
 };
 

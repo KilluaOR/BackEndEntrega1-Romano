@@ -10,7 +10,7 @@ export const getCartByIdControllers = async (req, res) => {
     if (!cart) {
       return res.status(404).json({ error: "Carrito no encontrado" });
     }
-    res.json({ status: "sucess", payload: cart });
+    res.json({ status: "success", payload: cart });
   } catch (error) {
     console.error("Error al obtener carrito:", error);
     res.status(500).json({ error: "Error interno al obtener carrito" });
@@ -67,7 +67,7 @@ export const deleteProductFromCartControllers = async (req, res) => {
   }
 };
 
-export const updateProductQuantityInCartControllers = async (res, res) => {
+export const updateProductQuantityInCartControllers = async (req, res) => {
   try {
     const { cid, pid } = req.params;
     const { quantity } = req.body;
@@ -75,7 +75,7 @@ export const updateProductQuantityInCartControllers = async (res, res) => {
     if (!quantity || quantity < 1) {
       return res
         .status(400)
-        .json({ error: "La acnatidad debe ser un número mayor a 0" });
+        .json({ error: "La cantidad debe ser un número mayor a 0" });
     }
 
     const result = await cartManager.updateProductQuantity(cid, pid, quantity);
@@ -113,5 +113,33 @@ export const deleteAllProductsFromCartControllers = async (req, res) => {
   } catch (error) {
     console.error("Error al eliminar productos del carrito:", error);
     res.status(500).json({ error: "Error interno al eliminar productos" });
+  }
+};
+
+export const updateAllProductsInCartControllers = async (req, res) => {
+  try {
+    const { cid } = req.params;
+    const { products } = req.body;
+
+    if (!products || !Array.isArray(products)) {
+      return res.status(404).json({
+        error: "Se debe enviar un arreglo de productos en el body",
+      });
+    }
+
+    const result = await cartManager.updateAllProducts(cid, products);
+
+    if (result?.error) {
+      return res.status(404).json(result);
+    }
+
+    res.json({
+      status: "success",
+      message: "Productos del carrito actualizados correctamente",
+      cart: result,
+    });
+  } catch (error) {
+    console.error("Error al actualizar productos del carrito:", error);
+    res.status(505).json({ error: "Error interno al actualizar productos" });
   }
 };

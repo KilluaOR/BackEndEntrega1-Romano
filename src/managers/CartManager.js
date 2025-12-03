@@ -1,4 +1,4 @@
-import { CartModel } from "../models/cart.model.js";
+import CartModel from "../models/cart.model.js";
 
 export default class CartManager {
   async getCarts() {
@@ -63,7 +63,7 @@ export default class CartManager {
       return { error: `Carrito con id ${cid} no encontrado` };
     }
 
-    const productInCart = cart.prodcuts.find(
+    const productInCart = cart.products.find(
       (item) => item.product.toString() === pid
     );
 
@@ -71,7 +71,24 @@ export default class CartManager {
       return { error: `Producto con id ${pid} no está en el carrito` };
     }
 
-    productInCart.quiantity = quantity;
+    productInCart.quantity = quantity;
+    await cart.save();
+
+    return cart;
+  }
+
+  async updateAllProducts(cid, products) {
+    const cart = await CartModel.findById(cid);
+
+    if (!cart) {
+      return { error: `Carrito con id ${cid} no encontrado` };
+    }
+
+    if (!Array.isArray(products)) {
+      return { error: "Los productos deben ser un arreglo" };
+    }
+
+    cart.products = products;
     await cart.save();
 
     return cart;
