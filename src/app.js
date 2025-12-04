@@ -46,7 +46,7 @@ app.set("views", path.join(__dirname, "views"));
 app.use(
   session({
     store: MongoStore.create({
-      mongoUrl: process.env.MONGO_URI || "mongodb://localhost:27017/miDB",
+      mongoUrl: process.env.MONGO_URI || "mongodb://127.0.0.1:27017/",
       ttl: 14 * 24 * 60 * 60,
     }),
     secret: process.env.SESSION_SECRET || "miSecretoSuperSecreto",
