@@ -45,6 +45,16 @@ export const viewsPLController = async (req, res) => {
     };
 
     const result = await ProductsModel.paginate(filter, options);
+
+    let cartId;
+    if (!req.session.cartId) {
+      const newCart = await CartModel.create({ products: [] });
+      req.session.cartId = newCart._id;
+      cartId = newCart._id;
+    } else {
+      cartId = req.session.cartId;
+    }
+
     res.render("productsList", {
       products: result.docs,
       paging: {
@@ -55,6 +65,7 @@ export const viewsPLController = async (req, res) => {
         hasPrevPage: result.hasPrevPage,
         hasNextPage: result.hasNextPage,
       },
+      cartId,
     });
   } catch (error) {
     console.error("Error al obtener productos:", error);
@@ -102,7 +113,10 @@ export const viewsCartDetailController = async (req, res) => {
       return res.status(404).send("Carrito no encontrado");
     }
 
-    res.render("cartDetail", { cart });
+    res.render("cartDetail", {
+      cartId: cart._id,
+      products: cart.products,
+    });
   } catch (error) {
     console.error(error);
     res.status(500).send("Error al obtener el carrito");

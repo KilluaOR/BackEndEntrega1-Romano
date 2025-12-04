@@ -1,18 +1,38 @@
-<div class="card">
-  <div class="card-header">
-    <h2 class="mb-0">Lista de Productos</h2>
-  </div>
-  <div class="card-body">
-    <ol id="productList" class="list-group list-group-numbered">
-      {{#each products}}
-        <li
-          id="p-{{this.id}}"
-          class="list-group-item d-flex justify-content-between align-items-center"
-        >
-          <span><strong>{{this.title}}</strong></span>
-          <span class="badge bg-primary">${{this.price}}</span>
-        </li>
-      {{/each}}
-    </ol>
-  </div>
+<h2>Lista de productos</h2>
+
+<div class="product-list">
+  {{#each products}}
+    <div class="product-card">
+      <h3>{{title}}</h3>
+      <p>{{description}}</p>
+      <p>Precio: ${{price}}</p>
+      <p>Categoría: {{category}}</p>
+      <p>Stock: {{stock}}</p>
+      <p>Código: {{code}}</p>
+      {{#if thumbnail}}
+        <img src="{{thumbnail}}" alt="{{title}}" width="100" />
+      {{/if}}
+      <button class="add-to-cart-btn" data-id="{{_id}}">Agregar al carrito</button>
+      <a href="/products/{{_id}}">Ver detalles</a>
+    </div>
+  {{/each}}
 </div>
+
+<div class="pagination">
+  {{#if paging.hasPrevPage}}
+    <a href="?page={{paging.prevPage}}&limit=10">« Anterior</a>
+  {{/if}}
+
+  <span>Página {{paging.page}} de {{paging.totalPages}}</span>
+
+  {{#if paging.hasNextPage}}
+    <a href="?page={{paging.nextPage}}&limit=10">Siguiente »</a>
+  {{/if}}
+</div>
+
+<div>
+  <body data-cart-id="{{cartId}}">
+</div>
+
+<script src="/socket.io/socket.io.js"></script>
+<script src="../public/js/cart.js"></script>

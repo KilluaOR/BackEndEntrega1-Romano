@@ -11,6 +11,7 @@ import productsRouter from "./routes/products.router.js";
 import cartsRouter from "./routes/carts.router.js";
 import viewsRouter from "./routes/views.router.js";
 import ProductsModel from "./models/product.model.js";
+import CartModel from "./models/cart.model.js";
 import connectDB from "./config/db.js";
 
 const app = express();
@@ -64,6 +65,30 @@ io.on("connection", async (socket) => {
     console.error("Error al obtener productos:", error);
     socket.emit("error", { message: "Error al cargar productos" });
   }
+
+  socket.on("addToCart", async ({ cartId, productId }) => {
+    try {
+      const cart = await CartModel.findById(cartId);
+      if (!cart) return socket.emit("error", "Carrito no encontrado");
+
+      const index = cart.products.findIndex(
+        (p) => p.product.toString() === productId
+      );
+
+      if (index > -1) {
+        cart.products[index].quantity += 1;
+      } else {
+        cart.products.push({ product: productId, quantity: 1 });
+      }
+
+      await cart.save();
+
+      socket.emit("cartUpdated", cart); // devuelvo carrito actualizado
+    } catch (error) {
+      console.error(error);
+      socket.emit("error", "No se pudo agregar el producto");
+    }
+  });
 
   //Cuando se crea un producto desde realtime
   socket.on("nuevoProducto", async (product) => {
