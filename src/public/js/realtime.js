@@ -13,7 +13,7 @@ socket.on("productos", (products) => {
 
   products.forEach((p) => {
     const li = document.createElement("li");
-    li.id = `p-${p.id}`;
+    li.id = `p-${p._id}`;
     li.className =
       "list-group-item d-flex justify-content-between align-items-center";
 
@@ -32,7 +32,7 @@ socket.on("productos", (products) => {
       const deleteBtn = document.createElement("button");
       deleteBtn.className = "btn btn-danger btn-sm ms-2";
       deleteBtn.textContent = "Eliminar";
-      deleteBtn.onclick = () => eliminarProducto(p.id);
+      deleteBtn.onclick = () => eliminarProducto(p._id);
       li.appendChild(titleSpan);
       li.appendChild(priceBadge);
       li.appendChild(deleteBtn);

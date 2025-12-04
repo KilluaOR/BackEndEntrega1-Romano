@@ -73,7 +73,16 @@ export const viewsProductDetailController = async (req, res) => {
         .status(404)
         .render("productDetail", { error: "El producto solicitado no existe" });
     }
-    return res.render("productDetail", { product });
+    let cart = await CartModel.findOne();
+
+    if (!cart) {
+      cart = await CartModel.create({ products: [] });
+    }
+
+    return res.render("productDetail", {
+      product,
+      cartId: cart._id.toString(),
+    });
   } catch (error) {
     console.error("Error al obtener detalle del producto:", error);
     res.render("productDetail", { error: "Error interno" });
