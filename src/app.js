@@ -2,6 +2,9 @@ import dotenv from "dotenv";
 dotenv.config();
 
 import express from "express";
+import session from "express-session";
+import MongoStore from "connect-mongo";
+import mongoose from "mongoose";
 import handlebars from "express-handlebars";
 import { Server } from "socket.io";
 import http from "http";
@@ -39,6 +42,21 @@ app.engine(
 
 app.set("view engine", "handlebars");
 app.set("views", path.join(__dirname, "views"));
+
+app.use(
+  session({
+    store: MongoStore.create({
+      mongoUrl: process.env.MONGO_URI || "mongodb://localhost:27017/miDB",
+      ttl: 14 * 24 * 60 * 60,
+    }),
+    secret: process.env.SESSION_SECRET || "miSecretoSuperSecreto",
+    resave: false,
+    saveUninitialized: true,
+    cookie: {
+      maxAge: 1000 * 60 * 60,
+    },
+  })
+);
 
 // Rutas principales
 app.use("/api/products", productsRouter);

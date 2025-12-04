@@ -15,9 +15,11 @@
   "packageManager": "pnpm@10.15.0",
   "dependencies": {
     "bootstrap": "^5.3.8",
+    "connect-mongo": "^6.0.0",
     "dotenv": "^17.2.3",
     "express": "^5.1.0",
     "express-handlebars": "^8.0.3",
+    "express-session": "^1.18.2",
     "mongodb": "^7.0.0",
     "mongoose": "^9.0.0",
     "mongoose-paginate-v2": "^1.9.1",

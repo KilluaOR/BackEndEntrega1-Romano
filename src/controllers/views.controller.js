@@ -26,7 +26,6 @@ export const viewsPLController = async (req, res) => {
     const { limit = 10, page = 1, sort, query } = req.query;
 
     let filter = {};
-
     if (query === "true" || query === "false") {
       filter.status = query === "true";
     } else if (query) {
@@ -45,6 +44,10 @@ export const viewsPLController = async (req, res) => {
     };
 
     const result = await ProductsModel.paginate(filter, options);
+
+    if (!req.session) {
+      return res.status(500).send("Error de sesión: inténtalo de nuevo");
+    }
 
     let cartId;
     if (!req.session.cartId) {
@@ -69,7 +72,7 @@ export const viewsPLController = async (req, res) => {
     });
   } catch (error) {
     console.error("Error al obtener productos:", error);
-    res.render("productsList", { products: [] });
+    res.render("productsList", { products: [], paging: {}, cartId: null });
   }
 };
 
