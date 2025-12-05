@@ -1,4 +1,5 @@
 import CartModel from "../models/cart.model.js";
+import ProductsModel from "../models/product.model.js";
 
 export default class CartManager {
   async getCarts() {

@@ -1,38 +1,91 @@
 <h2>Lista de productos</h2>
 
-<div class="product-list">
-  {{#each products}}
-    <div class="product-card">
-      <h3>{{title}}</h3>
-      <p>{{description}}</p>
-      <p>Precio: ${{price}}</p>
-      <p>Categoría: {{category}}</p>
-      <p>Stock: {{stock}}</p>
-      <p>Código: {{code}}</p>
-      {{#if thumbnail}}
-        <img src="{{thumbnail}}" alt="{{title}}" width="100" />
-      {{/if}}
-      <button class="add-to-cart-btn" data-id="{{_id}}">Agregar al carrito</button>
-      <a href="/products/{{_id}}">Ver detalles</a>
-    </div>
-  {{/each}}
+<div class="card mb-4">
+  <div class="card-body">
+    <h5 class="card-title">Buscar y Filtrar Productos</h5>
+    <form method="GET" action="/products" class="row g-3">
+      <div class="col-md-4">
+        <label for="query" class="form-label">Buscar por categoría o disponibilidad</label>
+        <select class="form-select" id="query" name="query">
+          <option value="">Todas las categorías</option>
+          {{#each categories}}
+            <option value="{{this}}" {{eq ../currentQuery this}}>
+              {{this}}
+            </option>
+          {{/each}}
+          <option value="true" {{eq currentQuery "true"}}>Disponibles (Activos)</option>
+          <option value="false" {{eq currentQuery "false"}}>No disponibles (Inactivos)</option>
+        </select>
+      </div>
+      <div class="col-md-4">
+        <label for="sort" class="form-label">Ordenar por precio</label>
+        <select class="form-select" id="sort" name="sort">
+          <option value="">Sin ordenar</option>
+          <option value="asc" {{eq currentSort "asc"}}>Menor a Mayor</option>
+          <option value="desc" {{eq currentSort "desc"}}>Mayor a Menor</option>
+        </select>
+      </div>
+      <div class="col-md-4 d-flex align-items-end">
+        <button type="submit" class="btn btn-primary me-2">Buscar</button>
+        <a href="/products" class="btn btn-secondary">Limpiar</a>
+      </div>
+      <input type="hidden" name="page" value="1">
+      <input type="hidden" name="limit" value="10">
+    </form>
+  </div>
 </div>
+
+{{#if products.length}}
+  <div class="product-list">
+    {{#each products}}
+      <div
+        class="product-card"
+        style="border: 1px solid #ddd; padding: 15px; margin: 10px 0;"
+      >
+        <h3>{{#if title}}{{title}}{{else}}Sin título{{/if}}</h3>
+        <p>{{#if description}}{{description}}{{else}}Sin descripción{{/if}}</p>
+        <p>Precio: ${{#if price}}{{price}}{{else}}0{{/if}}</p>
+        <p>Categoría:
+          {{#if category}}{{category}}{{else}}Sin categoría{{/if}}</p>
+        <p>Stock: {{#if stock}}{{stock}}{{else}}0{{/if}}</p>
+        <p>Código: {{#if code}}{{code}}{{else}}Sin código{{/if}}</p>
+        {{#if thumbnails}}
+          {{#if thumbnails.length}}
+            <img src="{{first thumbnails}}" alt="{{title}}" width="100" />
+          {{/if}}
+        {{/if}}
+        <button class="add-to-cart-btn" data-id="{{_id}}">Agregar al carrito</button>
+        <a href="/products/{{_id}}">Ver detalles</a>
+      </div>
+    {{/each}}
+  </div>
+{{else}}
+  <div class="alert alert-warning">
+    <p>No hay productos disponibles en este momento.</p>
+    <p>Ejecuta el seed para crear productos de prueba:
+      <code>node src/seed.js</code></p>
+  </div>
+{{/if}}
 
 <div class="pagination">
   {{#if paging.hasPrevPage}}
-    <a href="?page={{paging.prevPage}}&limit=10">« Anterior</a>
+    <a href="?page={{paging.prevPage}}&limit=10{{#if currentQuery}}&query={{currentQuery}}{{/if}}{{#if currentSort}}&sort={{currentSort}}{{/if}}">« Anterior</a>
   {{/if}}
 
   <span>Página {{paging.page}} de {{paging.totalPages}}</span>
 
   {{#if paging.hasNextPage}}
-    <a href="?page={{paging.nextPage}}&limit=10">Siguiente »</a>
+    <a href="?page={{paging.nextPage}}&limit=10{{#if currentQuery}}&query={{currentQuery}}{{/if}}{{#if currentSort}}&sort={{currentSort}}{{/if}}">Siguiente »</a>
   {{/if}}
 </div>
 
-<div>
-  <body data-cart-id="{{cartId}}">
-</div>
+<div id="cart-data" data-cart-id="{{cartId}}" style="display: none;"></div>
+
+{{#if cartId}}
+  <div class="mt-4">
+    <a href="/carts/{{cartId}}" class="btn btn-primary">Ver mi carrito</a>
+  </div>
+{{/if}}
 
 <script src="/socket.io/socket.io.js"></script>
 <script src="/js/cart.js"></script>

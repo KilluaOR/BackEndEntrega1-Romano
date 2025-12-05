@@ -1,48 +1,31 @@
-var socket = io();
-
 document.addEventListener("DOMContentLoaded", function () {
+  var socket = io();
   var cartDataElement = document.getElementById("cart-data");
-  var cartId = cartDataElement
+  var cartId = cartDataElement 
     ? cartDataElement.getAttribute("data-cart-id")
-    : document.body.getAttribute("data-cart-id");
-
-  if (!cartId) {
-    console.error("No se encontró el cartId");
-    alert(
-      "Error: No se pudo identificar el carrito. Por favor, recarga la página."
-    );
-    return;
-  }
-
-  var buttons = document.querySelectorAll(".add-to-cart-btn");
-
-  for (var i = 0; i < buttons.length; i++) {
-    buttons[i].addEventListener("click", function () {
-      if (!cartId) {
-        alert(
-          "Error: No se pudo identificar el carrito. Por favor, recarga la página."
-        );
-        return;
-      }
-      var productId = this.getAttribute("data-id");
-
+    : null;
+  
+  var addToCartBtn = document.getElementById("add-to-cart-btn");
+  if (addToCartBtn && cartId) {
+    addToCartBtn.addEventListener("click", function () {
+      var productId = this.getAttribute("data-product-id");
+      
       if (!productId) {
-        console.error("No se pudo obtener el ID del producto");
         alert("Error: No se pudo obtener el ID del producto.");
         return;
       }
-
+      
       socket.emit("addToCart", { cartId: cartId, productId: productId });
     });
   }
-
+  
   socket.on("cartUpdated", function (cart) {
     alert(
-      "Producto agregado al carrito! Total productos: " +
+      "✅ Producto agregado al carrito!\nTotal productos: " +
         (cart.products ? cart.products.length : 0)
     );
   });
-
+  
   socket.on("newCartId", function (newCartId) {
     cartId = newCartId;
     var cartDataElement = document.getElementById("cart-data");
@@ -54,20 +37,14 @@ document.addEventListener("DOMContentLoaded", function () {
       cartLink.href = "/carts/" + newCartId;
     }
   });
-
+  
   socket.on("error", function (msg) {
     console.error("Error del servidor:", msg);
-    alert("Error: " + (typeof msg === "string" ? msg : JSON.stringify(msg)));
+    alert("❌ Error: " + (typeof msg === "string" ? msg : JSON.stringify(msg)));
   });
-
+  
   socket.on("connect", function () {});
-
+  
   socket.on("disconnect", function () {});
-
-  if (cartId) {
-    var cartLink = document.getElementById("cart-link");
-    if (cartLink) {
-      cartLink.href = "/carts/" + cartId;
-    }
-  }
 });
+

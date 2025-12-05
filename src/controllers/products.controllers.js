@@ -4,10 +4,9 @@ import ProductsModel from "../models/product.model.js";
 export const getProductsControllers = async (req, res) => {
   try {
     const { limit, page, sort, query } = req.query;
-    console.log(req.query);
     let filter = {};
     if (query === "true" || query === "false") {
-      filter.status = query === "true"; //Convierte a boolean
+      filter.status = query === "true";
     } else if (query) {
       filter.category = query;
     }
@@ -21,10 +20,8 @@ export const getProductsControllers = async (req, res) => {
       page: parseInt(page) || 1,
       sort: sortOption,
     };
-    console.log(options);
 
     const result = await ProductsModel.paginate(filter, options);
-    console.log(result);
 
     res.json({
       status: "success",
@@ -38,7 +35,10 @@ export const getProductsControllers = async (req, res) => {
     });
   } catch (error) {
     console.error("Error al obtener productos:", error);
-    res.status(500).json({ error: "Error interno al obtener productos" });
+    res.status(500).json({
+      status: "error",
+      error: "Error interno al obtener productos",
+    });
   }
 };
 
@@ -89,7 +89,6 @@ export const updateProductControllers = async (req, res) => {
       { new: true, runValidators: true }
     );
 
-    //Validación básica
     if (!updatedProduct) {
       return res.status(404).json({ error: "Producto no encontrado" });
     }
@@ -118,7 +117,6 @@ export const deleteProductsControllers = async (req, res) => {
       return res.status(404).json({ error: "Producto no encontrado" });
     }
 
-    // Emitir evento de socket.io para actualizar la vista en tiempo real
     const io = req.app.get("io");
     if (io) {
       const products = await ProductsModel.find().lean();

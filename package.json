@@ -7,7 +7,10 @@
   "scripts": {
     "dev": "node --watch src/app.js",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node src/app.js"
+    "start": "node src/app.js",
+    "seed": "node src/seed.js",
+    "clean": "node -e \"import('./src/seed.js').then(m => m.clearDatabase().then(() => process.exit(0))).catch(e => {console.error(e); process.exit(1);})\"",
+    "reset": "npm run clean && npm run seed"
   },
   "keywords": [],
   "author": "",

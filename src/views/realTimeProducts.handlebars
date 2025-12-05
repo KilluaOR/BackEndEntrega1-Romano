@@ -44,17 +44,34 @@
 
 <h2 class="mb-4 mt-5">Lista de Productos</h2>
 
-<ol id="productList" class="list-group list-group-numbered">
+<div id="productList" class="row">
   {{#each products}}
-    <li
-      id="p-{{this._id}}"
-      class="list-group-item d-flex justify-content-between align-items-center"
-    >
-      <span><strong>{{this.title}}</strong></span>
-      <span class="badge bg-primary">${{this.price}}</span>
-    </li>
+    <div class="col-md-4 mb-3">
+      <div class="card" id="p-{{this._id}}">
+        <div class="card-body">
+          <h5 class="card-title">{{this.title}}</h5>
+          <p class="card-text"><strong>Descripción:</strong> {{this.description}}</p>
+          <p class="card-text"><strong>Precio:</strong> ${{this.price}}</p>
+          <p class="card-text"><strong>Categoría:</strong> {{this.category}}</p>
+          <p class="card-text"><strong>Stock:</strong> {{this.stock}}</p>
+          <p class="card-text"><strong>Código:</strong> {{this.code}}</p>
+          <p class="card-text"><strong>Status:</strong> {{#if this.status}}Activo{{else}}Inactivo{{/if}}</p>
+          {{#if this.thumbnails}}
+            {{#if this.thumbnails.length}}
+              <p class="card-text"><strong>Imágenes:</strong></p>
+              <div class="mb-2">
+                {{#each this.thumbnails}}
+                  <img src="{{this}}" alt="{{../this.title}}" class="img-thumbnail me-1" style="max-width: 100px; max-height: 100px;" />
+                {{/each}}
+              </div>
+            {{/if}}
+          {{/if}}
+          <button class="btn btn-danger btn-sm delete-product-btn" data-product-id="{{this._id}}">Eliminar</button>
+        </div>
+      </div>
+    </div>
   {{/each}}
-</ol>
+</div>
 
 <script src="/socket.io/socket.io.js"></script>
 <script src="/js/realtime.js"></script>

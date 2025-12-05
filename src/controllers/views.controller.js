@@ -1,3 +1,4 @@
+import mongoose from "mongoose";
 import ProductsModel from "../models/product.model.js";
 import CartModel from "../models/cart.model.js";
 
@@ -41,9 +42,19 @@ export const viewsPLController = async (req, res) => {
       limit: parseInt(limit),
       page: parseInt(page),
       sort: sortOption,
+      lean: true,
     };
 
     const result = await ProductsModel.paginate(filter, options);
+
+    const products = result.docs;
+    let categories = [];
+    try {
+      categories = await ProductsModel.distinct("category");
+    } catch (error) {
+      console.error("Error al obtener categorías:", error);
+      categories = [];
+    }
 
     if (!req.session) {
       return res.status(500).send("Error de sesión: inténtalo de nuevo");
@@ -59,7 +70,7 @@ export const viewsPLController = async (req, res) => {
     }
 
     res.render("productsList", {
-      products: result.docs,
+      products: products,
       paging: {
         totalPages: result.totalPages,
         page: result.page,
@@ -68,11 +79,22 @@ export const viewsPLController = async (req, res) => {
         hasPrevPage: result.hasPrevPage,
         hasNextPage: result.hasNextPage,
       },
-      cartId,
+      cartId: cartId ? cartId.toString() : null,
+      categories: categories || [],
+      currentQuery: query || "",
+      currentSort: sort || "",
     });
   } catch (error) {
     console.error("Error al obtener productos:", error);
-    res.render("productsList", { products: [], paging: {}, cartId: null });
+    console.error("Stack trace:", error.stack);
+    res.render("productsList", {
+      products: [],
+      paging: {},
+      cartId: null,
+      categories: [],
+      currentQuery: "",
+      currentSort: "",
+    });
   }
 };
 
@@ -87,15 +109,23 @@ export const viewsProductDetailController = async (req, res) => {
         .status(404)
         .render("productDetail", { error: "El producto solicitado no existe" });
     }
-    let cart = await CartModel.findOne();
 
-    if (!cart) {
-      cart = await CartModel.create({ products: [] });
+    if (!req.session) {
+      return res.status(500).send("Error de sesión: inténtalo de nuevo");
+    }
+
+    let cartId;
+    if (!req.session.cartId) {
+      const newCart = await CartModel.create({ products: [] });
+      req.session.cartId = newCart._id;
+      cartId = newCart._id;
+    } else {
+      cartId = req.session.cartId;
     }
 
     return res.render("productDetail", {
       product,
-      cartId: cart._id.toString(),
+      cartId: cartId.toString(),
     });
   } catch (error) {
     console.error("Error al obtener detalle del producto:", error);
@@ -107,21 +137,38 @@ export const viewsCartDetailController = async (req, res) => {
   try {
     const { cid } = req.params;
 
-    // Buscar el carrito por ID y hacer populate de los productos
-    const cart = await CartModel.findById(cid)
+    if (!mongoose.Types.ObjectId.isValid(cid)) {
+      return res.status(400).render("cartDetail", {
+        error: "ID de carrito inválido",
+        cart: null,
+      });
+    }
+
+    let cart = await CartModel.findById(cid)
       .populate("products.product")
       .lean();
 
     if (!cart) {
-      return res.status(404).send("Carrito no encontrado");
+      const newCart = await CartModel.create({ products: [] });
+      cart = await CartModel.findById(newCart._id)
+        .populate("products.product")
+        .lean();
+
+      if (req.session) {
+        req.session.cartId = newCart._id;
+      }
+
+      return res.redirect(`/carts/${newCart._id}`);
     }
 
     res.render("cartDetail", {
-      cartId: cart._id,
-      products: cart.products,
+      cart: cart,
     });
   } catch (error) {
-    console.error(error);
-    res.status(500).send("Error al obtener el carrito");
+    console.error("Error en viewsCartDetailController:", error);
+    res.status(500).render("cartDetail", {
+      error: "Error al obtener el carrito",
+      cart: null,
+    });
   }
 };

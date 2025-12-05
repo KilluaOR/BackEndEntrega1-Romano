@@ -1,28 +1,82 @@
 <h2 class="mb-4">Detalle del Carrito</h2>
 
-<div id="cartContainer" data-cart-id="{{cart._id}}">
-  {{#if cart.products.length}}
-    <ul class="list-group" id="cartProducts">
-      {{#each cart.products}}
-        <li
-          class="list-group-item d-flex justify-content-between align-items-center"
-        >
-          <div>
-            <strong>{{this.product.title}}</strong><br />
-            <small>Precio unitario: ${{this.product.price}}</small><br />
-            <small>Cantidad: {{this.quantity}}</small><br />
-            <small>Total: ${{multiply this.product.price this.quantity}}</small>
-          </div>
-        </li>
-      {{/each}}
-    </ul>
-
-    <hr class="my-4" />
-    <h4>Total del carrito: ${{cartTotal cart.products}}</h4>
-  {{else}}
-    <p>El carrito está vacío.</p>
+{{#if error}}
+  <div class="alert alert-danger">
+    <p>{{error}}</p>
+    <a href="/products" class="btn btn-primary">Volver a productos</a>
+  </div>
+{{else}}
+  {{#if cart._id}}
+    <div
+      id="cart-data"
+      data-cart-id="{{cart._id}}"
+      style="display: none;"
+    ></div>
   {{/if}}
-</div>
+  <div id="cartContainer" data-cart-id="{{cart._id}}">
+    {{#if cart.products.length}}
+      <ul class="list-group" id="cartProducts">
+        {{#each cart.products}}
+          <li
+            class="list-group-item d-flex justify-content-between align-items-center"
+            data-product-id="{{this.product._id}}"
+          >
+            <div class="flex-grow-1">
+              <strong>{{this.product.title}}</strong><br />
+              <small>Precio unitario: ${{this.product.price}}</small><br />
+              <div class="mt-2 d-flex align-items-center gap-2">
+                <label for="quantity-{{this.product._id}}" class="form-label mb-0">Cantidad:</label>
+                <input
+                  type="number"
+                  class="form-control form-control-sm quantity-input"
+                  id="quantity-{{this.product._id}}"
+                  value="{{this.quantity}}"
+                  min="1"
+                  style="width: 80px;"
+                  data-product-id="{{this.product._id}}"
+                />
+                <button
+                  class="btn btn-sm btn-primary update-quantity-btn"
+                  data-product-id="{{this.product._id}}"
+                >
+                  Actualizar
+                </button>
+              </div>
+              <small class="d-block mt-1">Total: ${{multiply
+                  this.product.price
+                  this.quantity
+                }}</small>
+            </div>
+            <div class="ms-3">
+              <button
+                class="btn btn-sm btn-danger delete-product-btn"
+                data-product-id="{{this.product._id}}"
+              >
+                Eliminar
+              </button>
+            </div>
+          </li>
+        {{/each}}
+      </ul>
+
+      <hr class="my-4" />
+      <div class="d-flex justify-content-between align-items-center">
+        <h4>Total del carrito: $<span id="cartTotalAmount">{{cartTotal
+              cart.products
+            }}</span></h4>
+        <button
+          class="btn btn-danger"
+          id="clear-cart-btn"
+          data-cart-id="{{cart._id}}"
+        >
+          Vaciar Carrito
+        </button>
+      </div>
+    {{else}}
+      <p>El carrito está vacío.</p>
+    {{/if}}
+  </div>
+{{/if}}
 
 <script src="/socket.io/socket.io.js"></script>
 <script src="/js/cartDetail.js"></script>

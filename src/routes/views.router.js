@@ -13,7 +13,7 @@ router.get("/", viewsHomeController);
 
 router.get("/realtimeproducts", viewsRTPController);
 
-router.get("/productsList", viewsPLController);
+router.get("/products", viewsPLController);
 
 router.get("/products/:pid", viewsProductDetailController);
 

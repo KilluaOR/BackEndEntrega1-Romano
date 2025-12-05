@@ -7,7 +7,7 @@ import {
   updateProductControllers,
 } from "../controllers/products.controllers.js";
 
-const router = Router(); //Mini servidor q maneja las rutas de productos.
+const router = Router();
 
 router.get("/", getProductsControllers);
 

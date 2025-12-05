@@ -5,8 +5,36 @@
   <p><strong>Precio:</strong> ${{product.price}}</p>
   <p><strong>Descripción:</strong> {{product.description}}</p>
   <p><strong>Categoría:</strong> {{product.category}}</p>
+  <p><strong>Code:</strong> {{product.code}}</p>
+  <p><strong>Stock:</strong> {{product.stock}}</p>
+  <p><strong>Status:</strong> {{#if product.status}}Activo{{else}}Inactivo{{/if}}</p>
+  {{#if product.thumbnails}}
+    {{#if product.thumbnails.length}}
+      <p><strong>Thumbnails:</strong></p>
+      <div class="mb-2">
+        {{#each product.thumbnails}}
+          <img src="{{this}}" alt="{{../product.title}}" class="img-thumbnail me-1" style="max-width: 100px; max-height: 100px;" />
+        {{/each}}
+      </div>
+    {{/if}}
+  {{/if}}
+  {{#if product.createdAt}}
+    <p><strong>Creado:</strong> {{product.createdAt}}</p>
+  {{/if}}
+  {{#if product.updatedAt}}
+    <p><strong>Actualizado:</strong> {{product.updatedAt}}</p>
+  {{/if}}
 
-  <form action="/api/carts/{{cartId}}/product/{{product._id}}" method="POST">
-    <button class="btn btn-primary" type="submit">Agregar al carrito</button>
-  </form>
+  <button
+    class="btn btn-primary"
+    id="add-to-cart-btn"
+    data-product-id="{{product._id}}"
+  >Agregar al carrito</button>
 </div>
+
+{{#if cartId}}
+  <div id="cart-data" data-cart-id="{{cartId}}" style="display: none;"></div>
+{{/if}}
+
+<script src="/socket.io/socket.io.js"></script>
+<script src="/js/productDetail.js"></script>
