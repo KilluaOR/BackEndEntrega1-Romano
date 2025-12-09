@@ -83,7 +83,6 @@ const io = new Server(httpServer);
 app.set("io", io);
 
 io.on("connection", async (socket) => {
-
   try {
     const products = await ProductsModel.find().lean();
     socket.emit("productos", products);
